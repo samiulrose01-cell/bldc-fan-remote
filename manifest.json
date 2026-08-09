@@ -1,18 +1,1 @@
-{
-  "name": "BLDC Fan Remote",
-  "short_name": "Fan Remote",
-  "start_url": "./",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#07111f",
-  "theme_color": "#07111f",
-  "description": "BLDC fan remote with Internet MQTT and home Wi-Fi control",
-  "icons": [
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
-}
+{"name":"BLDC Fan Remote","short_name":"Fan Remote","start_url":"./","display":"standalone","background_color":"#07111f","theme_color":"#07111f","description":"Internet BLDC fan remote"}
