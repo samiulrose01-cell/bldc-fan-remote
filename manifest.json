@@ -1,1 +1,17 @@
-{"name":"BLDC Fan Remote","short_name":"Fan Remote","start_url":"./","display":"standalone","background_color":"#07111f","theme_color":"#07111f","description":"Internet BLDC fan remote"}
+{
+  "name": "BLDC Fan Remote",
+  "short_name": "Fan Remote",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "description": "Internet BLDC Fan Remote",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
