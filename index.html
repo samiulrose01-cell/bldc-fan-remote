@@ -12,8 +12,6 @@
 <section class="card"><div class="label">POWER</div><div class="grid2"><button class="on" onclick="sendCommand('ON')">ON</button><button class="off" onclick="sendCommand('OFF')">OFF</button></div></section>
 <section class="card"><div class="row"><div class="label">SPEED</div><div id="last" class="small"></div></div><div class="grid3">
 <button class="speed" data-speed="1" onclick="sendCommand('S1')">1</button><button class="speed" data-speed="2" onclick="sendCommand('S2')">2</button><button class="speed" data-speed="3" onclick="sendCommand('S3')">3</button><button class="speed" data-speed="4" onclick="sendCommand('S4')">4</button><button class="speed" data-speed="5" onclick="sendCommand('S5')">5</button><button class="speed" data-speed="6" onclick="sendCommand('S6')">6</button></div><button class="full" onclick="sendCommand('FULL')">FULL POWER</button></section>
-<div id="toast" class="toast"></div>
-  <button class="full" onclick="sendCommand('FULL')">FULL POWER</button>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script><script>
 const HOST="0f361fa0238547348bd1826499d0e794.s1.eu.hivemq.cloud",PORT=8884;
 const USER="fan_esp32",PASS="S@miul438502r";
