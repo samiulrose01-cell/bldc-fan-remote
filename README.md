@@ -9,7 +9,7 @@ The GitHub Pages app is served over HTTPS. Browsers block an HTTPS page from dir
 Therefore the reliable design is:
 
 - Internet available: GitHub Pages remote → HiveMQ WebSocket/MQTT → ESP32
-- ISP/internet down but home Wi-Fi working: open the ESP32's local Home Remote at `http://fan-esp32.local/`
+- ISP/internet down but home Wi-Fi working: open the ESP32's local Home Remote at `192.168.10.141`
 - No IP address is required; mDNS provides the `.local` hostname.
 
 The ESP32 local page uses the same fan controls and MQTT command format.
@@ -42,8 +42,8 @@ The firmware provides:
 
 - MQTT commands on `bldc-fan/7Kx92LmP/command`
 - state on `bldc-fan/7Kx92LmP/state`
-- local web remote at `http://fan-esp32.local/`
-- mDNS hostname `fan-esp32.local`
+- local web remote at `192.168.10.141`
+- mDNS hostname `192.168.10.141`
 - ON/OFF/S1-S6/FULL
 - startup state protection: no automatic ON command after reboot
 
@@ -53,7 +53,7 @@ Connect the phone to the same home Wi-Fi as the ESP32.
 
 When the ISP is down, open:
 
-`http://fan-esp32.local/`
+`192.168.10.141`
 
 No IP address is required.
 
