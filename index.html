@@ -1,30 +1,1058 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f"><link rel="manifest" href="manifest.json">
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta name="theme-color"
+      content="#07111f">
+
+<link rel="manifest"
+      href="manifest.json">
+
 <title>BLDC Fan Remote</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#17345b,#07111f 45%,#030914);color:#fff;font-family:system-ui,sans-serif;display:flex;justify-content:center}.app{width:min(100%,460px);padding:18px 15px}h1{text-align:center;margin:4px 0;font-size:30px}header p{text-align:center;color:#91a0b8;margin:0 0 16px}.card{background:#101d30dd;border:1px solid #263957;border-radius:25px;padding:18px;margin:12px 0;box-shadow:0 18px 45px #0007}.connection{height:40px;border-radius:14px;background:#3b1720;color:#fecaca;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800}.connection.ok{background:#0d2b21;color:#bbf7d0}.dot{width:9px;height:9px;border-radius:50%;background:#ef4444}.ok .dot{background:#22c55e;box-shadow:0 0 12px #22c55e}.fan{text-align:center;width:190px;height:190px;margin:5px auto 14px;border-radius:50%;display:grid;place-items:center;background:#0b1729;border:2px solid #294263;box-shadow:inset 0 0 35px #0008}.blades{font-size:112px;display:block}.running .blades{animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.state{text-align:center;font-size:27px;font-weight:900}.sub{text-align:center;color:#91a0b8;font-size:13px}.label{color:#91a0b8;font-size:12px;font-weight:900;letter-spacing:1px;margin-bottom:10px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}button{border:0;min-height:62px;border-radius:18px;color:#fff;font-size:18px;font-weight:900;box-shadow:0 7px 18px #0004;transition:.08s}button:active{transform:scale(.95)}.on{background:#16a34a}.off{background:#dc2626}.speed{background:#2563eb}.speed.active{outline:3px solid #bfdbfe}.full{width:100%;margin-top:10px;background:#ea580c}.small{text-align:right;color:#91a0b8;font-size:12px}.row{display:flex;justify-content:space-between}.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);opacity:0;background:#e2e8f0;color:#07111f;padding:11px 16px;border-radius:14px;font-weight:800;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
-</style></head><body><main class="app">
-<header><h1>🌀 BLDC Fan</h1><p>Smart Internet Remote</p></header>
-<section class="card"><div id="connection" class="connection"><span class="dot"></span><span id="connectionText">Connecting…</span></div></section>
-<section class="card"><div id="fan" class="fan"><span class="blades">✣</span></div><div id="state" class="state">Unknown</div><div id="speedText" class="sub">Waiting for fan state…</div></section>
-<section class="card"><div class="label">POWER</div><div class="grid2"><button class="on" onclick="sendCommand('ON')">ON</button><button class="off" onclick="sendCommand('OFF')">OFF</button></div></section>
-<section class="card"><div class="row"><div class="label">SPEED</div><div id="last" class="small"></div></div><div class="grid3">
-<button class="speed" data-speed="1" onclick="sendCommand('S1')">1</button><button class="speed" data-speed="2" onclick="sendCommand('S2')">2</button><button class="speed" data-speed="3" onclick="sendCommand('S3')">3</button><button class="speed" data-speed="4" onclick="sendCommand('S4')">4</button><button class="speed" data-speed="5" onclick="sendCommand('S5')">5</button><button class="speed" data-speed="6" onclick="sendCommand('S6')">6</button></div><button class="full" onclick="sendCommand('FULL')">FULL POWER</button></section>
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script><script>
-const HOST="0f361fa0238547348bd1826499d0e794.s1.eu.hivemq.cloud",PORT=8884;
-const USER="fan_esp32",PASS="S@miul438502r";
-const CMD="bldc-fan/7Kx92LmP/command",STATE="bldc-fan/7Kx92LmP/state";
-const $=x=>document.getElementById(x);
-const client=mqtt.connect(`wss://${HOST}:${PORT}/mqtt`,{username:USER,password:PASS,clientId:"fan-web-"+Math.random().toString(16).slice(2),clean:true,connectTimeout:10000,reconnectPeriod:3000});
-client.on("connect",()=>{$("connection").classList.add("ok");$("connectionText").textContent="Connected";client.subscribe(STATE)});
-client.on("reconnect",()=>{$("connection").classList.remove("ok");$("connectionText").textContent="Reconnecting…"});
-client.on("close",()=>{$("connection").classList.remove("ok");$("connectionText").textContent="Disconnected"});
-client.on("error",e=>console.error(e));
-client.on("message",(t,m)=>updateState(m.toString().trim()));
-function updateState(v){$("state").textContent=v;$("last").textContent="Live";document.querySelectorAll(".speed").forEach(b=>b.classList.remove("active"));let u=v.toUpperCase();if(u==="OFF"){$("fan").classList.remove("running");$("speedText").textContent="Fan is off"}else{$("fan").classList.add("running");if(u==="ON")$("speedText").textContent="Powered on";else if(u==="FULL")$("speedText").textContent="Full power";else{let m=u.match(/SPEED\s*(\d+)/);if(m){document.querySelector(`.speed[data-speed="${m[1]}"]`)?.classList.add("active");$("speedText").textContent="Speed "+m[1]}else $("speedText").textContent="Running"}}}
-function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),900)}
-function sendCommand(c){if(!client.connected){toast("Not connected");return}client.publish(CMD,c,{qos:0,retain:false},e=>toast(e?"Send failed":"Sent: "+c))}
-if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
-</script></main></body></html>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 50% 0,
+            #17345b,
+            #07111f 45%,
+            #030914
+        );
+
+    color: #fff;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    display: flex;
+    justify-content: center;
+}
+
+.app {
+    width: min(100%, 460px);
+    padding: 18px 15px;
+}
+
+h1 {
+    text-align: center;
+    margin: 4px 0;
+    font-size: 30px;
+}
+
+header p {
+    text-align: center;
+    color: #91a0b8;
+    margin: 0 0 16px;
+}
+
+.card {
+    background: #101d30dd;
+    border: 1px solid #263957;
+    border-radius: 25px;
+    padding: 18px;
+    margin: 12px 0;
+
+    box-shadow: 0 18px 45px #0007;
+}
+
+.connection {
+    height: 40px;
+
+    border-radius: 14px;
+
+    background: #3b1720;
+    color: #fecaca;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    font-weight: 800;
+}
+
+.connection.ok {
+    background: #0d2b21;
+    color: #bbf7d0;
+}
+
+.dot {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #ef4444;
+}
+
+.connection.ok .dot {
+    background: #22c55e;
+
+    box-shadow:
+        0 0 12px #22c55e;
+}
+
+.fan {
+    text-align: center;
+
+    width: 190px;
+    height: 190px;
+
+    margin: 5px auto 14px;
+
+    border-radius: 50%;
+
+    display: grid;
+    place-items: center;
+
+    background: #0b1729;
+
+    border: 2px solid #294263;
+
+    box-shadow:
+        inset 0 0 35px #0008;
+}
+
+.blades {
+    font-size: 112px;
+    display: block;
+}
+
+.running .blades {
+    animation:
+        spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.state {
+    text-align: center;
+
+    font-size: 27px;
+    font-weight: 900;
+}
+
+.sub {
+    text-align: center;
+
+    color: #91a0b8;
+
+    font-size: 13px;
+}
+
+.label {
+    color: #91a0b8;
+
+    font-size: 12px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 10px;
+}
+
+.grid2 {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 11px;
+}
+
+.grid3 {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+button {
+    border: 0;
+
+    min-height: 62px;
+
+    border-radius: 18px;
+
+    color: #fff;
+
+    font-size: 18px;
+    font-weight: 900;
+
+    box-shadow:
+        0 7px 18px #0004;
+
+    transition: .08s;
+
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(.95);
+}
+
+button:disabled {
+    opacity: .5;
+}
+
+.on {
+    background: #16a34a;
+}
+
+.off {
+    background: #dc2626;
+}
+
+.speed {
+    background: #2563eb;
+}
+
+.speed.active {
+    outline:
+        3px solid #bfdbfe;
+}
+
+.full {
+    width: 100%;
+
+    margin-top: 10px;
+
+    background: #ea580c;
+}
+
+.small {
+    text-align: right;
+
+    color: #91a0b8;
+
+    font-size: 12px;
+}
+
+.row {
+    display: flex;
+
+    justify-content: space-between;
+}
+
+.toast {
+    position: fixed;
+
+    bottom: 25px;
+    left: 50%;
+
+    transform:
+        translate(-50%,20px);
+
+    opacity: 0;
+
+    background: #e2e8f0;
+    color: #07111f;
+
+    padding: 11px 16px;
+
+    border-radius: 14px;
+
+    font-weight: 800;
+
+    transition: .2s;
+
+    z-index: 999;
+}
+
+.toast.show {
+    opacity: 1;
+
+    transform:
+        translate(-50%,0);
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<main class="app">
+
+<header>
+
+<h1>🌀 BLDC Fan</h1>
+
+<p>
+Smart Internet Remote
+</p>
+
+</header>
+
+
+<!-- CONNECTION -->
+
+<section class="card">
+
+<div id="connection"
+     class="connection">
+
+<span class="dot"></span>
+
+<span id="connectionText">
+Connecting…
+</span>
+
+</div>
+
+</section>
+
+
+<!-- FAN STATUS -->
+
+<section class="card">
+
+<div id="fan"
+     class="fan">
+
+<span class="blades">
+✣
+</span>
+
+</div>
+
+
+<div id="state"
+     class="state">
+
+Unknown
+
+</div>
+
+
+<div id="speedText"
+     class="sub">
+
+Waiting for fan state…
+
+</div>
+
+</section>
+
+
+<!-- POWER -->
+
+<section class="card">
+
+<div class="label">
+POWER
+</div>
+
+
+<div class="grid2">
+
+<button
+    class="on"
+    onclick="sendCommand('ON')">
+
+ON
+
+</button>
+
+
+<button
+    class="off"
+    onclick="sendCommand('OFF')">
+
+OFF
+
+</button>
+
+</div>
+
+</section>
+
+
+<!-- SPEED -->
+
+<section class="card">
+
+<div class="row">
+
+<div class="label">
+SPEED
+</div>
+
+<div id="last"
+     class="small">
+
+</div>
+
+</div>
+
+
+<div class="grid3">
+
+<button
+    class="speed"
+    data-speed="1"
+    onclick="sendCommand('SPEED1')">
+
+1
+
+</button>
+
+
+<button
+    class="speed"
+    data-speed="2"
+    onclick="sendCommand('SPEED2')">
+
+2
+
+</button>
+
+
+<button
+    class="speed"
+    data-speed="3"
+    onclick="sendCommand('SPEED3')">
+
+3
+
+</button>
+
+
+<button
+    class="speed"
+    data-speed="4"
+    onclick="sendCommand('SPEED4')">
+
+4
+
+</button>
+
+
+<button
+    class="speed"
+    data-speed="5"
+    onclick="sendCommand('SPEED5')">
+
+5
+
+</button>
+
+
+<button
+    class="speed"
+    data-speed="6"
+    onclick="sendCommand('SPEED6')">
+
+6
+
+</button>
+
+</div>
+
+
+<button
+    class="full"
+    onclick="sendCommand('FULL')">
+
+FULL POWER
+
+</button>
+
+</section>
+
+
+<!-- TOAST -->
+
+<div id="toast"
+     class="toast">
+
+</div>
+
+
+<!-- MQTT LIBRARY -->
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js">
+</script>
+
+
+<script>
+
+/*
+========================================================
+ HIVEMQ
+========================================================
+*/
+
+const HOST =
+"0f361fa0238547348bd1826499d0e794.s1.eu.hivemq.cloud";
+
+const PORT = 8884;
+
+const USER =
+"fan_esp32";
+
+const PASS =
+"S@miul438502r";
+
+
+/*
+========================================================
+ MQTT TOPICS
+========================================================
+
+ THESE MUST EXACTLY MATCH ESP32:
+
+ ESP32:
+ const char* COMMAND_TOPIC = "fan/command";
+ const char* STATE_TOPIC   = "fan/state";
+
+========================================================
+*/
+
+const CMD =
+"fan/command";
+
+const STATE =
+"fan/state";
+
+
+/*
+========================================================
+ ELEMENT HELPER
+========================================================
+*/
+
+const $ = id =>
+    document.getElementById(id);
+
+
+/*
+========================================================
+ MQTT CLIENT ID
+========================================================
+*/
+
+const CLIENT_ID =
+"fan-web-" +
+Math.random()
+    .toString(16)
+    .substring(2);
+
+
+/*
+========================================================
+ CONNECT TO HIVEMQ
+========================================================
+
+ HiveMQ Cloud WebSocket:
+
+ WSS
+ Port 8884
+
+========================================================
+*/
+
+const client = mqtt.connect(
+    "wss://" +
+    HOST +
+    ":" +
+    PORT +
+    "/mqtt",
+    {
+        username: USER,
+
+        password: PASS,
+
+        clientId: CLIENT_ID,
+
+        clean: true,
+
+        connectTimeout: 10000,
+
+        reconnectPeriod: 3000,
+
+        keepalive: 30
+    }
+);
+
+
+/*
+========================================================
+ MQTT CONNECTED
+========================================================
+*/
+
+client.on(
+    "connect",
+    () =>
+    {
+        console.log(
+            "MQTT connected"
+        );
+
+
+        $("connection")
+            .classList
+            .add("ok");
+
+
+        $("connectionText")
+            .textContent =
+            "Connected";
+
+
+        client.subscribe(
+            STATE,
+            {
+                qos: 0
+            },
+            error =>
+            {
+                if (error)
+                {
+                    console.error(
+                        "Subscribe error:",
+                        error
+                    );
+
+                    toast(
+                        "State subscribe failed"
+                    );
+                }
+                else
+                {
+                    console.log(
+                        "Subscribed:",
+                        STATE
+                    );
+                }
+            }
+        );
+    }
+);
+
+
+/*
+========================================================
+ MQTT RECONNECT
+========================================================
+*/
+
+client.on(
+    "reconnect",
+    () =>
+    {
+        console.log(
+            "MQTT reconnecting..."
+        );
+
+
+        $("connection")
+            .classList
+            .remove("ok");
+
+
+        $("connectionText")
+            .textContent =
+            "Reconnecting…";
+    }
+);
+
+
+/*
+========================================================
+ MQTT CLOSE
+========================================================
+*/
+
+client.on(
+    "close",
+    () =>
+    {
+        $("connection")
+            .classList
+            .remove("ok");
+
+
+        $("connectionText")
+            .textContent =
+            "Disconnected";
+    }
+);
+
+
+/*
+========================================================
+ MQTT ERROR
+========================================================
+*/
+
+client.on(
+    "error",
+    error =>
+    {
+        console.error(
+            "MQTT ERROR:",
+            error
+        );
+    }
+);
+
+
+/*
+========================================================
+ MQTT MESSAGE
+========================================================
+*/
+
+client.on(
+    "message",
+    (topic, message) =>
+    {
+        console.log(
+            "MQTT MESSAGE:",
+            topic,
+            message.toString()
+        );
+
+
+        if (topic === STATE)
+        {
+            updateState(
+                message
+                    .toString()
+                    .trim()
+            );
+        }
+    }
+);
+
+
+/*
+========================================================
+ UPDATE FAN STATE
+========================================================
+*/
+
+function updateState(value)
+{
+    if (!value)
+    {
+        return;
+    }
+
+
+    const state =
+        value.toUpperCase();
+
+
+    $("state")
+        .textContent =
+        state;
+
+
+    $("last")
+        .textContent =
+        "Live";
+
+
+    /*
+    -----------------------------------------------
+    Remove previous speed highlight
+    -----------------------------------------------
+    */
+
+    document
+        .querySelectorAll(".speed")
+        .forEach(
+            button =>
+            {
+                button
+                    .classList
+                    .remove("active");
+            }
+        );
+
+
+    /*
+    -----------------------------------------------
+    OFF
+    -----------------------------------------------
+    */
+
+    if (state === "OFF")
+    {
+        $("fan")
+            .classList
+            .remove("running");
+
+
+        $("speedText")
+            .textContent =
+            "Fan is off";
+
+
+        return;
+    }
+
+
+    /*
+    -----------------------------------------------
+    ON
+    -----------------------------------------------
+    */
+
+    $("fan")
+        .classList
+        .add("running");
+
+
+    if (state === "ON")
+    {
+        $("speedText")
+            .textContent =
+            "Powered on";
+
+        return;
+    }
+
+
+    /*
+    -----------------------------------------------
+    FULL
+    -----------------------------------------------
+    */
+
+    if (state === "FULL")
+    {
+        $("speedText")
+            .textContent =
+            "Full power";
+
+        return;
+    }
+
+
+    /*
+    -----------------------------------------------
+    SPEED
+    -----------------------------------------------
+    */
+
+    const match =
+        state.match(
+            /SPEED\s*(\d+)/
+        );
+
+
+    if (match)
+    {
+        const speed =
+            match[1];
+
+
+        const button =
+            document.querySelector(
+                `.speed[data-speed="${speed}"]`
+            );
+
+
+        if (button)
+        {
+            button
+                .classList
+                .add("active");
+        }
+
+
+        $("speedText")
+            .textContent =
+            "Speed " + speed;
+
+
+        return;
+    }
+
+
+    /*
+    -----------------------------------------------
+    OTHER STATE
+    -----------------------------------------------
+    */
+
+    $("speedText")
+        .textContent =
+        "Running";
+}
+
+
+/*
+========================================================
+ TOAST
+========================================================
+*/
+
+let toastTimer = null;
+
+
+function toast(message)
+{
+    $("toast")
+        .textContent =
+        message;
+
+
+    $("toast")
+        .classList
+        .add("show");
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            () =>
+            {
+                $("toast")
+                    .classList
+                    .remove("show");
+            },
+            1200
+        );
+}
+
+
+/*
+========================================================
+ SEND COMMAND
+========================================================
+*/
+
+function sendCommand(command)
+{
+    console.log(
+        "Sending:",
+        command
+    );
+
+
+    /*
+    -----------------------------------------------
+    Check MQTT
+    -----------------------------------------------
+    */
+
+    if (!client.connected)
+    {
+        toast(
+            "Not connected to MQTT"
+        );
+
+        return;
+    }
+
+
+    /*
+    -----------------------------------------------
+    Publish
+    -----------------------------------------------
+    */
+
+    client.publish(
+        CMD,
+        command,
+        {
+            qos: 0,
+            retain: false
+        },
+        error =>
+        {
+            if (error)
+            {
+                console.error(
+                    "Publish error:",
+                    error
+                );
+
+                toast(
+                    "Send failed"
+                );
+
+                return;
+            }
+
+
+            console.log(
+                "Sent:",
+                command
+            );
+
+
+            toast(
+                "Sent: " + command
+            );
+        }
+    );
+}
+
+
+/*
+========================================================
+ SERVICE WORKER
+========================================================
+*/
+
+if (
+    "serviceWorker" in navigator
+)
+{
+    navigator.serviceWorker
+        .register("sw.js")
+        .catch(
+            error =>
+            {
+                console.log(
+                    "Service worker:",
+                    error
+                );
+            }
+        );
+}
+
+</script>
+
+</main>
+
+</body>
+
+</html>
