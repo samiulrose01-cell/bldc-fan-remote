@@ -1,603 +1,487 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="utf-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1,viewport-fit=cover">
-
-<meta name="theme-color"
-content="#07111f">
-
-<link rel="manifest"
-href="manifest.json">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>BLDC Fan Remote</title>
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.3.5/mqtt.min.js"></script>
 <style>
-
-/* =========================================================
-   RESET
-========================================================= */
-
-* {
-  box-sizing:border-box;
-}
-
-
-/* =========================================================
-   BODY
-========================================================= */
-
-body {
-  margin:0;
-  min-height:100vh;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  background:#07111f;
-
-  color:white;
-
-  display:flex;
-
-  justify-content:center;
-
-  align-items:center;
-
-  padding:20px;
-}
-
-
-/* =========================================================
-   MAIN CARD
-========================================================= */
-
-.card {
-
-  width:100%;
-
-  max-width:420px;
-
-  background:#101c2d;
-
-  border-radius:24px;
-
-  padding:24px;
-
-  box-shadow:
-    0 20px 50px rgba(0,0,0,.45);
-
-}
-
-
-/* =========================================================
-   TITLE
-========================================================= */
-
-h1 {
-
-  text-align:center;
-
-  margin:0;
-
-  font-size:30px;
-
-  font-weight:800;
-
-}
-
-
-.subtitle {
-
-  text-align:center;
-
-  margin-top:6px;
-
-  color:#8fa3bb;
-
-  font-size:14px;
-
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-.status {
-
-  margin-top:24px;
-
-  padding:20px;
-
-  background:#0a1422;
-
-  border-radius:18px;
-
-  text-align:center;
-
-}
-
-
-.label {
-
-  font-size:12px;
-
-  letter-spacing:2px;
-
-  color:#8194aa;
-
-  margin-bottom:8px;
-
-}
-
-
-#state {
-
-  font-size:25px;
-
-  font-weight:800;
-
-}
-
-
-/* =========================================================
-   BUTTON GRID
-========================================================= */
-
-.grid {
-
-  margin-top:20px;
-
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:12px;
-
-}
-
-
-button {
-
-  width:100%;
-
-  min-height:58px;
-
-  border:none;
-
-  border-radius:16px;
-
-  background:#26364b;
-
-  color:white;
-
-  font-size:17px;
-
-  font-weight:700;
-
-  cursor:pointer;
-
-  transition:
-    transform .12s,
-    filter .12s;
-
-}
-
-
-button:active {
-
-  transform:scale(.96);
-
-}
-
-
-button:hover {
-
-  filter:brightness(1.12);
-
-}
-
-
-/* =========================================================
-   ON
-========================================================= */
-
-.on {
-
-  background:#16a765;
-
-}
-
-
-/* =========================================================
-   OFF
-========================================================= */
-
-.off {
-
-  background:#dc3545;
-
-}
-
-
-/* =========================================================
-   SPEED BUTTONS
-========================================================= */
-
-.speed {
-
-  background:#26364b;
-
-}
-
-
-/* =========================================================
-   FULL SPEED
-========================================================= */
-
-.full {
-
-  grid-column:span 2;
-
-  background:#ff9800;
-
-  color:white;
-
-}
-
-
-/* =========================================================
-   CONNECTION
-========================================================= */
-
-.connection {
-
-  margin-top:20px;
-
-  text-align:center;
-
-  font-size:13px;
-
-  color:#8fa3bb;
-
-}
-
-
-.dot {
-
-  display:inline-block;
-
-  width:9px;
-
-  height:9px;
-
-  border-radius:50%;
-
-  background:#22c55e;
-
-  margin-right:5px;
-
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width:360px) {
-
-  body {
-    padding:12px;
+  :root{
+    --bg1:#0b0c10;
+    --bg2:#15171c;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.12);
+    --accent:#20c76a;
+    --danger:#e53935;
+    --warn:#ff9800;
+    --text:#f2f2f2;
+    --sub:#9aa0a6;
   }
-
-  .card {
-    padding:18px;
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background: radial-gradient(circle at 20% 0%, #1b1e26 0%, var(--bg1) 55%), var(--bg2);
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:24px 16px 60px;
   }
-
-  h1 {
-    font-size:26px;
+  .top{
+    width:100%;
+    max-width:420px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
   }
-
-  button {
-    min-height:54px;
+  h1{
+    font-size:20px;
+    letter-spacing:1px;
+    margin:0;
+    font-weight:700;
+  }
+  .gear{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    color:var(--text);
+    width:38px;height:38px;
+    border-radius:12px;
+    font-size:18px;
+    cursor:pointer;
+  }
+  .card{
+    width:100%;
+    max-width:420px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius:20px;
+    padding:22px;
+    margin-bottom:16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+  .status-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .status-dot{
+    width:10px;height:10px;border-radius:50%;
+    display:inline-block;
+    margin-right:8px;
+    background:#666;
+    box-shadow:0 0 0 rgba(0,0,0,0);
+  }
+  .status-dot.local{ background:var(--accent); box-shadow:0 0 8px var(--accent);}
+  .status-dot.cloud{ background:#3fa9f5; box-shadow:0 0 8px #3fa9f5;}
+  .status-dot.off{ background:var(--danger); box-shadow:0 0 8px var(--danger);}
+  .status-text{font-size:13px; color:var(--sub);}
+  .state-value{
+    font-size:28px;
+    font-weight:700;
+    margin-top:6px;
+    letter-spacing:1px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:8px;
+  }
+  .grid.speeds{grid-template-columns:repeat(3,1fr);}
+  button.cmd{
+    border:0;
+    border-radius:14px;
+    padding:16px 10px;
     font-size:15px;
+    font-weight:700;
+    color:white;
+    cursor:pointer;
+    transition:transform .08s ease;
   }
-
-}
-
+  button.cmd:active{transform:scale(.95);}
+  .on{background:linear-gradient(135deg,#22d47a,#1aa658);}
+  .off{background:linear-gradient(135deg,#f0473f,#c62828);}
+  .speed{background:rgba(255,255,255,0.10); border:1px solid var(--glass-border);}
+  .full{background:linear-gradient(135deg,#ffb14a,#ff8f00); grid-column:1 / -1;}
+  .section-label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--sub);
+    margin:18px 0 8px;
+  }
+  .modal-backdrop{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:10;
+  }
+  .modal-backdrop.show{display:flex;}
+  .modal{
+    background:#1b1d24;
+    border:1px solid var(--glass-border);
+    border-radius:18px;
+    padding:22px;
+    width:100%;
+    max-width:380px;
+  }
+  .modal h2{margin-top:0; font-size:17px;}
+  .field{margin-bottom:12px;}
+  .field label{display:block; font-size:12px; color:var(--sub); margin-bottom:5px;}
+  .field input{
+    width:100%;
+    padding:11px 12px;
+    border-radius:10px;
+    border:1px solid var(--glass-border);
+    background:#101218;
+    color:var(--text);
+    font-size:14px;
+  }
+  .modal-btns{display:flex; gap:10px; margin-top:16px;}
+  .modal-btns button{
+    flex:1;
+    padding:12px;
+    border-radius:10px;
+    border:0;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .btn-save{background:var(--accent); color:#04220f;}
+  .btn-cancel{background:rgba(255,255,255,0.08); color:var(--text);}
+  .note{font-size:11.5px; color:var(--sub); line-height:1.5; margin-top:4px;}
+  .footer-note{
+    font-size:11px;
+    color:var(--sub);
+    text-align:center;
+    max-width:380px;
+    margin-top:6px;
+  }
 </style>
-
 </head>
-
-
 <body>
 
-
-<div class="card">
-
-
-<!-- ======================================================
-     TITLE
-======================================================= -->
-
-<h1>
-  💨 BLDC FAN
-</h1>
-
-
-<div class="subtitle">
-  Home Network Remote
-</div>
-
-
-<!-- ======================================================
-     STATUS
-======================================================= -->
-
-<div class="status">
-
-  <div class="label">
-    FAN STATUS
+  <div class="top">
+    <h1>BLDC FAN</h1>
+    <button class="gear" id="settingsBtn" aria-label="Settings">⚙</button>
   </div>
 
-  <div id="state">
-    OFF
+  <div class="card">
+    <div class="status-row">
+      <div><span class="status-dot off" id="statusDot"></span><span class="status-text" id="statusText">Connecting…</span></div>
+      <div class="status-text" id="latencyText"></div>
+    </div>
+    <div class="state-value" id="stateValue">—</div>
   </div>
 
-</div>
+  <div class="card">
+    <div class="grid">
+      <button class="cmd on" onclick="send('ON')">ON</button>
+      <button class="cmd off" onclick="send('OFF')">OFF</button>
+    </div>
 
+    <div class="section-label">Speed</div>
+    <div class="grid speeds">
+      <button class="cmd speed" onclick="send('SPEED1')">1</button>
+      <button class="cmd speed" onclick="send('SPEED2')">2</button>
+      <button class="cmd speed" onclick="send('SPEED3')">3</button>
+      <button class="cmd speed" onclick="send('SPEED4')">4</button>
+      <button class="cmd speed" onclick="send('SPEED5')">5</button>
+      <button class="cmd speed" onclick="send('SPEED6')">6</button>
+    </div>
 
-<!-- ======================================================
-     BUTTONS
-======================================================= -->
+    <div class="grid" style="margin-top:14px;">
+      <button class="cmd full" onclick="send('FULL')">FULL</button>
+    </div>
+  </div>
 
-<div class="grid">
+  <div class="footer-note">Prefers local network when reachable, falls back to cloud (MQTT) automatically.</div>
 
+  <!-- Settings modal -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h2>Connection settings</h2>
 
-<!-- ON -->
+      <div class="field">
+        <label>Fan's local IP address</label>
+        <input type="text" id="cfgLocalIp" placeholder="192.168.10.141">
+      </div>
 
-<button
-  class="on"
-  onclick="sendCommand('ON')">
+      <div class="field">
+        <label>HiveMQ Cloud host</label>
+        <input type="text" id="cfgHost" placeholder="xxxxxxxx.s1.eu.hivemq.cloud">
+      </div>
 
-  ⏻ ON
+      <div class="field">
+        <label>MQTT username</label>
+        <input type="text" id="cfgUser" placeholder="fan_esp32">
+      </div>
 
-</button>
+      <div class="field">
+        <label>MQTT password</label>
+        <input type="password" id="cfgPass" placeholder="••••••••">
+      </div>
 
+      <div class="field">
+        <label>Command topic</label>
+        <input type="text" id="cfgCmdTopic" placeholder="fan/command">
+      </div>
 
-<!-- OFF -->
+      <div class="field">
+        <label>State topic</label>
+        <input type="text" id="cfgStateTopic" placeholder="fan/state">
+      </div>
 
-<button
-  class="off"
-  onclick="sendCommand('OFF')">
+      <p class="note">Saved only in this browser (localStorage), never uploaded to GitHub. Don't hardcode real credentials into this file if the repo is public.</p>
 
-  ⏹ OFF
-
-</button>
-
-
-<!-- ======================================================
-     SPEED 1
-======================================================= -->
-
-<button
-  class="speed"
-  onclick="sendCommand('SPEED1')">
-
-  SPEED 1
-
-</button>
-
-
-<!-- ======================================================
-     SPEED 2
-======================================================= -->
-
-<button
-  class="speed"
-  onclick="sendCommand('SPEED2')">
-
-  SPEED 2
-
-</button>
-
-
-<!-- ======================================================
-     SPEED 3
-======================================================= -->
-
-<button
-  class="speed"
-  onclick="sendCommand('SPEED3')">
-
-  SPEED 3
-
-</button>
-
-
-<!-- ======================================================
-     SPEED 4
-======================================================= -->
-
-<button
-  class="speed"
-  onclick="sendCommand('SPEED4')">
-
-  SPEED 4
-
-</button>
-
-
-<!-- ======================================================
-     SPEED 5
-======================================================= -->
-
-<button
-  class="speed"
-  onclick="sendCommand('SPEED5')">
-
-  SPEED 5
-
-</button>
-
-
-<!-- ======================================================
-     SPEED 6
-======================================================= -->
-
-<button
-  class="speed"
-  onclick="sendCommand('SPEED6')">
-
-  SPEED 6
-
-</button>
-
-
-<!-- ======================================================
-     FULL
-======================================================= -->
-
-<button
-  class="full"
-  onclick="sendCommand('FULL')">
-
-  ⚡ FULL SPEED
-
-</button>
-
-
-</div>
-
-
-<!-- ======================================================
-     CONNECTION
-======================================================= -->
-
-<div class="connection">
-
-  <span class="dot"></span>
-
-  ESP32 Local Network Control
-
-</div>
-
-
-</div>
-
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
+        <button class="btn-save" onclick="saveSettings()">Save & Reconnect</button>
+      </div>
+    </div>
+  </div>
 
 <script>
+/* ============================================================
+   CONFIG (persisted in this browser only, via localStorage)
+============================================================ */
+const DEFAULTS = {
+  localIp: "192.168.10.141",
+  host: "0f361fa0238547348bd1826499d0e794.s1.eu.hivemq.cloud",
+  user: "",
+  pass: "",
+  cmdTopic: "fan/command",
+  stateTopic: "fan/state"
+};
 
-
-// =========================================================
-// SEND COMMAND
-// =========================================================
-
-function sendCommand(command)
-{
-
-  fetch(
-    '/command?cmd=' +
-    encodeURIComponent(command)
-  )
-
-  .then(
-    function(response)
-    {
-      return response.text();
-    }
-  )
-
-  .then(
-    function(state)
-    {
-      document.getElementById(
-        'state'
-      ).innerText = state;
-    }
-  )
-
-  .catch(
-    function(error)
-    {
-      console.log(
-        'Command error:',
-        error
-      );
-    }
-  );
-
+function loadConfig(){
+  const stored = localStorage.getItem("fanRemoteConfig");
+  return stored ? JSON.parse(stored) : { ...DEFAULTS };
+}
+function saveConfig(cfg){
+  localStorage.setItem("fanRemoteConfig", JSON.stringify(cfg));
 }
 
+let cfg = loadConfig();
 
-// =========================================================
-// UPDATE STATE
-// =========================================================
+/* ============================================================
+   STATE
+============================================================ */
+let mode = "none";       // "local" | "cloud" | "none"
+let mqttClient = null;
+let mqttConnecting = false;
+let localCheckTimer = null;
+let statePollTimer = null;
 
-function updateState()
-{
+const dot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const stateValue = document.getElementById('stateValue');
+const latencyText = document.getElementById('latencyText');
 
-  fetch('/state')
-
-  .then(
-    function(response)
-    {
-      return response.text();
-    }
-  )
-
-  .then(
-    function(state)
-    {
-
-      document.getElementById(
-        'state'
-      ).innerText = state;
-
-    }
-  )
-
-  .catch(
-    function(error)
-    {
-      console.log(
-        'State error:',
-        error
-      );
-    }
-  );
-
+function setStatus(newMode, label){
+  mode = newMode;
+  dot.className = "status-dot " + (newMode === "local" ? "local" : newMode === "cloud" ? "cloud" : "off");
+  statusText.textContent = label;
 }
 
+function setState(val){
+  stateValue.textContent = val || "—";
+}
 
-// =========================================================
-// UPDATE STATE EVERY SECOND
-// =========================================================
+/* ============================================================
+   LOCAL HTTP MODE
+============================================================ */
+function localUrl(path){
+  return "http://" + cfg.localIp + path;
+}
 
-setInterval(
-  updateState,
-  1000
-);
+async function tryLocal(){
+  if (!cfg.localIp) return false;
+  const controller = new AbortController();
+  const t = setTimeout(() => controller.abort(), 1200);
+  try{
+    const start = performance.now();
+    const res = await fetch(localUrl("/state"), { signal: controller.signal, cache: "no-store" });
+    clearTimeout(t);
+    if (!res.ok) return false;
+    const text = await res.text();
+    const ms = Math.round(performance.now() - start);
+    latencyText.textContent = ms + "ms";
+    setStatus("local", "Local network");
+    setState(text);
+    return true;
+  }catch(e){
+    clearTimeout(t);
+    return false;
+  }
+}
 
+function startLocalPolling(){
+  stopStatePolling();
+  statePollTimer = setInterval(async () => {
+    const ok = await tryLocal();
+    if (!ok){
+      stopStatePolling();
+      connectCloud();
+    }
+  }, 4000);
+}
 
-// =========================================================
-// INITIAL STATE
-// =========================================================
+function stopStatePolling(){
+  if (statePollTimer) clearInterval(statePollTimer);
+  statePollTimer = null;
+}
 
-updateState();
+async function sendLocal(command){
+  const res = await fetch(localUrl("/command?cmd=" + encodeURIComponent(command)), { cache: "no-store" });
+  const text = await res.text();
+  setState(text);
+}
 
+/* ============================================================
+   CLOUD MQTT MODE (over WebSockets / WSS, port 8884, path /mqtt)
+============================================================ */
+function connectCloud(){
+  if (mqttConnecting) return;
+  if (!cfg.host) { setStatus("none", "No connection configured"); return; }
 
+  mqttConnecting = true;
+  setStatus("none", "Connecting to cloud…");
+
+  const url = "wss://" + cfg.host + ":8884/mqtt";
+  const client = mqtt.connect(url, {
+    username: cfg.user,
+    password: cfg.pass,
+    clientId: "webremote_" + Math.random().toString(16).slice(2),
+    reconnectPeriod: 4000,
+    connectTimeout: 6000
+  });
+
+  client.on('connect', () => {
+    mqttConnecting = false;
+    latencyText.textContent = "";
+    setStatus("cloud", "Cloud (MQTT)");
+    client.subscribe(cfg.stateTopic);
+    // Keep trying to reclaim local connection in background
+    startLocalWatcher();
+  });
+
+  client.on('message', (topic, payload) => {
+    if (topic === cfg.stateTopic){
+      setState(payload.toString());
+    }
+  });
+
+  client.on('error', () => { mqttConnecting = false; });
+  client.on('close', () => {
+    if (mode === "cloud") setStatus("none", "Reconnecting…");
+  });
+
+  mqttClient = client;
+}
+
+function sendCloud(command){
+  if (mqttClient && mqttClient.connected){
+    mqttClient.publish(cfg.cmdTopic, command);
+  }
+}
+
+/* ============================================================
+   BACKGROUND: keep checking if local becomes available again
+   so we can switch back and get lower latency
+============================================================ */
+function startLocalWatcher(){
+  if (localCheckTimer) return;
+  localCheckTimer = setInterval(async () => {
+    if (mode === "local") return;
+    const ok = await tryLocal();
+    if (ok){
+      if (mqttClient) mqttClient.end(true);
+      mqttClient = null;
+      clearInterval(localCheckTimer);
+      localCheckTimer = null;
+      startLocalPolling();
+    }
+  }, 8000);
+}
+
+/* ============================================================
+   MAIN SEND FUNCTION
+============================================================ */
+async function send(command){
+  if (mode === "local"){
+    try{ await sendLocal(command); }
+    catch(e){ sendCloud(command); }
+  } else {
+    sendCloud(command);
+  }
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+async function init(){
+  const ok = await tryLocal();
+  if (ok){
+    startLocalPolling();
+  } else {
+    connectCloud();
+  }
+}
+
+/* ============================================================
+   SETTINGS MODAL
+============================================================ */
+const modalBackdrop = document.getElementById('modalBackdrop');
+
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+
+function openSettings(){
+  document.getElementById('cfgLocalIp').value = cfg.localIp || "";
+  document.getElementById('cfgHost').value = cfg.host || "";
+  document.getElementById('cfgUser').value = cfg.user || "";
+  document.getElementById('cfgPass').value = cfg.pass || "";
+  document.getElementById('cfgCmdTopic').value = cfg.cmdTopic || "";
+  document.getElementById('cfgStateTopic').value = cfg.stateTopic || "";
+  modalBackdrop.classList.add('show');
+}
+
+function closeSettings(){
+  modalBackdrop.classList.remove('show');
+}
+
+function saveSettings(){
+  cfg = {
+    localIp: document.getElementById('cfgLocalIp').value.trim(),
+    host: document.getElementById('cfgHost').value.trim(),
+    user: document.getElementById('cfgUser').value,
+    pass: document.getElementById('cfgPass').value,
+    cmdTopic: document.getElementById('cfgCmdTopic').value.trim() || "fan/command",
+    stateTopic: document.getElementById('cfgStateTopic').value.trim() || "fan/state"
+  };
+  saveConfig(cfg);
+  closeSettings();
+
+  // Reset connections and reconnect fresh
+  stopStatePolling();
+  if (mqttClient){ mqttClient.end(true); mqttClient = null; }
+  if (localCheckTimer){ clearInterval(localCheckTimer); localCheckTimer = null; }
+  init();
+}
+
+// First-run: if nothing saved yet, seed with defaults (topics/host) but blank credentials
+if (!localStorage.getItem("fanRemoteConfig")){
+  saveConfig(cfg);
+}
+
+init();
 </script>
-
-
 </body>
-
 </html>
