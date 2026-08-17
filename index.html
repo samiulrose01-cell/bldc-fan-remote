@@ -6,290 +6,311 @@
 <meta charset="utf-8">
 
 <meta name="viewport"
-      content="width=device-width,initial-scale=1,viewport-fit=cover">
+content="width=device-width,initial-scale=1,viewport-fit=cover">
 
 <meta name="theme-color"
-      content="#07111f">
+content="#07111f">
 
 <link rel="manifest"
-      href="manifest.json">
+href="manifest.json">
 
 <title>BLDC Fan Remote</title>
 
+
 <style>
 
+/* =========================================================
+   RESET
+========================================================= */
+
 * {
-    box-sizing: border-box;
+  box-sizing:border-box;
 }
+
+
+/* =========================================================
+   BODY
+========================================================= */
 
 body {
-    margin: 0;
-    min-height: 100vh;
+  margin:0;
+  min-height:100vh;
 
-    background:
-        radial-gradient(
-            circle at 50% 0,
-            #17345b,
-            #07111f 45%,
-            #030914
-        );
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-    color: #fff;
+  background:#07111f;
 
-    font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+  color:white;
 
-    display: flex;
-    justify-content: center;
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  padding:20px;
 }
 
-.app {
-    width: min(100%, 460px);
-    padding: 18px 15px;
-}
 
-h1 {
-    text-align: center;
-    margin: 4px 0;
-    font-size: 30px;
-}
-
-header p {
-    text-align: center;
-    color: #91a0b8;
-    margin: 0 0 16px;
-}
+/* =========================================================
+   MAIN CARD
+========================================================= */
 
 .card {
-    background: #101d30dd;
-    border: 1px solid #263957;
-    border-radius: 25px;
-    padding: 18px;
-    margin: 12px 0;
 
-    box-shadow: 0 18px 45px #0007;
+  width:100%;
+
+  max-width:420px;
+
+  background:#101c2d;
+
+  border-radius:24px;
+
+  padding:24px;
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.45);
+
 }
 
-.connection {
-    height: 40px;
 
-    border-radius: 14px;
+/* =========================================================
+   TITLE
+========================================================= */
 
-    background: #3b1720;
-    color: #fecaca;
+h1 {
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  text-align:center;
 
-    gap: 8px;
+  margin:0;
 
-    font-weight: 800;
+  font-size:30px;
+
+  font-weight:800;
+
 }
 
-.connection.ok {
-    background: #0d2b21;
-    color: #bbf7d0;
+
+.subtitle {
+
+  text-align:center;
+
+  margin-top:6px;
+
+  color:#8fa3bb;
+
+  font-size:14px;
+
 }
 
-.dot {
-    width: 9px;
-    height: 9px;
 
-    border-radius: 50%;
+/* =========================================================
+   STATUS
+========================================================= */
 
-    background: #ef4444;
+.status {
+
+  margin-top:24px;
+
+  padding:20px;
+
+  background:#0a1422;
+
+  border-radius:18px;
+
+  text-align:center;
+
 }
 
-.connection.ok .dot {
-    background: #22c55e;
-
-    box-shadow:
-        0 0 12px #22c55e;
-}
-
-.fan {
-    text-align: center;
-
-    width: 190px;
-    height: 190px;
-
-    margin: 5px auto 14px;
-
-    border-radius: 50%;
-
-    display: grid;
-    place-items: center;
-
-    background: #0b1729;
-
-    border: 2px solid #294263;
-
-    box-shadow:
-        inset 0 0 35px #0008;
-}
-
-.blades {
-    font-size: 112px;
-    display: block;
-}
-
-.running .blades {
-    animation:
-        spin .8s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.state {
-    text-align: center;
-
-    font-size: 27px;
-    font-weight: 900;
-}
-
-.sub {
-    text-align: center;
-
-    color: #91a0b8;
-
-    font-size: 13px;
-}
 
 .label {
-    color: #91a0b8;
 
-    font-size: 12px;
-    font-weight: 900;
+  font-size:12px;
 
-    letter-spacing: 1px;
+  letter-spacing:2px;
 
-    margin-bottom: 10px;
+  color:#8194aa;
+
+  margin-bottom:8px;
+
 }
 
-.grid2 {
-    display: grid;
 
-    grid-template-columns:
-        1fr 1fr;
+#state {
 
-    gap: 11px;
+  font-size:25px;
+
+  font-weight:800;
+
 }
 
-.grid3 {
-    display: grid;
 
-    grid-template-columns:
-        repeat(3, 1fr);
+/* =========================================================
+   BUTTON GRID
+========================================================= */
 
-    gap: 10px;
+.grid {
+
+  margin-top:20px;
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:12px;
+
 }
+
 
 button {
-    border: 0;
 
-    min-height: 62px;
+  width:100%;
 
-    border-radius: 18px;
+  min-height:58px;
 
-    color: #fff;
+  border:none;
 
-    font-size: 18px;
-    font-weight: 900;
+  border-radius:16px;
 
-    box-shadow:
-        0 7px 18px #0004;
+  background:#26364b;
 
-    transition: .08s;
+  color:white;
 
-    cursor: pointer;
+  font-size:17px;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+  transition:
+    transform .12s,
+    filter .12s;
+
 }
+
 
 button:active {
-    transform: scale(.95);
+
+  transform:scale(.96);
+
 }
 
-button:disabled {
-    opacity: .5;
+
+button:hover {
+
+  filter:brightness(1.12);
+
 }
+
+
+/* =========================================================
+   ON
+========================================================= */
 
 .on {
-    background: #16a34a;
+
+  background:#16a765;
+
 }
+
+
+/* =========================================================
+   OFF
+========================================================= */
 
 .off {
-    background: #dc2626;
+
+  background:#dc3545;
+
 }
+
+
+/* =========================================================
+   SPEED BUTTONS
+========================================================= */
 
 .speed {
-    background: #2563eb;
+
+  background:#26364b;
+
 }
 
-.speed.active {
-    outline:
-        3px solid #bfdbfe;
-}
+
+/* =========================================================
+   FULL SPEED
+========================================================= */
 
 .full {
-    width: 100%;
 
-    margin-top: 10px;
+  grid-column:span 2;
 
-    background: #ea580c;
+  background:#ff9800;
+
+  color:white;
+
 }
 
-.small {
-    text-align: right;
 
-    color: #91a0b8;
+/* =========================================================
+   CONNECTION
+========================================================= */
 
-    font-size: 12px;
+.connection {
+
+  margin-top:20px;
+
+  text-align:center;
+
+  font-size:13px;
+
+  color:#8fa3bb;
+
 }
 
-.row {
-    display: flex;
 
-    justify-content: space-between;
+.dot {
+
+  display:inline-block;
+
+  width:9px;
+
+  height:9px;
+
+  border-radius:50%;
+
+  background:#22c55e;
+
+  margin-right:5px;
+
 }
 
-.toast {
-    position: fixed;
 
-    bottom: 25px;
-    left: 50%;
+/* =========================================================
+   MOBILE
+========================================================= */
 
-    transform:
-        translate(-50%,20px);
+@media (max-width:360px) {
 
-    opacity: 0;
+  body {
+    padding:12px;
+  }
 
-    background: #e2e8f0;
-    color: #07111f;
+  .card {
+    padding:18px;
+  }
 
-    padding: 11px 16px;
+  h1 {
+    font-size:26px;
+  }
 
-    border-radius: 14px;
+  button {
+    min-height:54px;
+    font-size:15px;
+  }
 
-    font-weight: 800;
-
-    transition: .2s;
-
-    z-index: 999;
-}
-
-.toast.show {
-    opacity: 1;
-
-    transform:
-        translate(-50%,0);
 }
 
 </style>
@@ -299,759 +320,283 @@ button:disabled {
 
 <body>
 
-<main class="app">
 
-<header>
-
-<h1>🌀 BLDC Fan</h1>
-
-<p>
-Smart Internet Remote
-</p>
-
-</header>
+<div class="card">
 
 
-<!-- CONNECTION -->
+<!-- ======================================================
+     TITLE
+======================================================= -->
 
-<section class="card">
+<h1>
+  💨 BLDC FAN
+</h1>
 
-<div id="connection"
-     class="connection">
 
-<span class="dot"></span>
-
-<span id="connectionText">
-Connecting…
-</span>
-
+<div class="subtitle">
+  Home Network Remote
 </div>
 
-</section>
 
+<!-- ======================================================
+     STATUS
+======================================================= -->
 
-<!-- FAN STATUS -->
+<div class="status">
 
-<section class="card">
+  <div class="label">
+    FAN STATUS
+  </div>
 
-<div id="fan"
-     class="fan">
-
-<span class="blades">
-✣
-</span>
+  <div id="state">
+    OFF
+  </div>
 
 </div>
 
 
-<div id="state"
-     class="state">
+<!-- ======================================================
+     BUTTONS
+======================================================= -->
 
-Unknown
-
-</div>
-
-
-<div id="speedText"
-     class="sub">
-
-Waiting for fan state…
-
-</div>
-
-</section>
+<div class="grid">
 
 
-<!-- POWER -->
-
-<section class="card">
-
-<div class="label">
-POWER
-</div>
-
-
-<div class="grid2">
+<!-- ON -->
 
 <button
-    class="on"
-    onclick="sendCommand('ON')">
+  class="on"
+  onclick="sendCommand('ON')">
 
-ON
+  ⏻ ON
 
 </button>
 
 
-<button
-    class="off"
-    onclick="sendCommand('OFF')">
-
-OFF
-
-</button>
-
-</div>
-
-</section>
-
-
-<!-- SPEED -->
-
-<section class="card">
-
-<div class="row">
-
-<div class="label">
-SPEED
-</div>
-
-<div id="last"
-     class="small">
-
-</div>
-
-</div>
-
-
-<div class="grid3">
+<!-- OFF -->
 
 <button
-    class="speed"
-    data-speed="1"
-    onclick="sendCommand('SPEED1')">
+  class="off"
+  onclick="sendCommand('OFF')">
 
-1
+  ⏹ OFF
 
 </button>
 
 
-<button
-    class="speed"
-    data-speed="2"
-    onclick="sendCommand('SPEED2')">
+<!-- ======================================================
+     SPEED 1
+======================================================= -->
 
-2
+<button
+  class="speed"
+  onclick="sendCommand('SPEED1')">
+
+  SPEED 1
 
 </button>
 
 
-<button
-    class="speed"
-    data-speed="3"
-    onclick="sendCommand('SPEED3')">
+<!-- ======================================================
+     SPEED 2
+======================================================= -->
 
-3
+<button
+  class="speed"
+  onclick="sendCommand('SPEED2')">
+
+  SPEED 2
 
 </button>
 
 
-<button
-    class="speed"
-    data-speed="4"
-    onclick="sendCommand('SPEED4')">
+<!-- ======================================================
+     SPEED 3
+======================================================= -->
 
-4
+<button
+  class="speed"
+  onclick="sendCommand('SPEED3')">
+
+  SPEED 3
 
 </button>
 
 
-<button
-    class="speed"
-    data-speed="5"
-    onclick="sendCommand('SPEED5')">
+<!-- ======================================================
+     SPEED 4
+======================================================= -->
 
-5
+<button
+  class="speed"
+  onclick="sendCommand('SPEED4')">
+
+  SPEED 4
 
 </button>
 
 
-<button
-    class="speed"
-    data-speed="6"
-    onclick="sendCommand('SPEED6')">
+<!-- ======================================================
+     SPEED 5
+======================================================= -->
 
-6
+<button
+  class="speed"
+  onclick="sendCommand('SPEED5')">
+
+  SPEED 5
 
 </button>
 
-</div>
 
+<!-- ======================================================
+     SPEED 6
+======================================================= -->
 
 <button
-    class="full"
-    onclick="sendCommand('FULL')">
+  class="speed"
+  onclick="sendCommand('SPEED6')">
 
-FULL POWER
+  SPEED 6
 
 </button>
 
-</section>
 
+<!-- ======================================================
+     FULL
+======================================================= -->
 
-<!-- TOAST -->
+<button
+  class="full"
+  onclick="sendCommand('FULL')">
 
-<div id="toast"
-     class="toast">
+  ⚡ FULL SPEED
+
+</button>
+
 
 </div>
 
 
-<!-- MQTT LIBRARY -->
+<!-- ======================================================
+     CONNECTION
+======================================================= -->
 
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js">
-</script>
+<div class="connection">
+
+  <span class="dot"></span>
+
+  ESP32 Local Network Control
+
+</div>
+
+
+</div>
 
 
 <script>
 
-/*
-========================================================
- HIVEMQ
-========================================================
-*/
 
-const HOST =
-"0f361fa0238547348bd1826499d0e794.s1.eu.hivemq.cloud";
-
-const PORT = 8884;
-
-const USER =
-"fan_esp32";
-
-const PASS =
-"S@miul438502r";
-
-
-/*
-========================================================
- MQTT TOPICS
-========================================================
-
- THESE MUST EXACTLY MATCH ESP32:
-
- ESP32:
- const char* COMMAND_TOPIC = "fan/command";
- const char* STATE_TOPIC   = "fan/state";
-
-========================================================
-*/
-
-const CMD =
-"fan/command";
-
-const STATE =
-"fan/state";
-
-
-/*
-========================================================
- ELEMENT HELPER
-========================================================
-*/
-
-const $ = id =>
-    document.getElementById(id);
-
-
-/*
-========================================================
- MQTT CLIENT ID
-========================================================
-*/
-
-const CLIENT_ID =
-"fan-web-" +
-Math.random()
-    .toString(16)
-    .substring(2);
-
-
-/*
-========================================================
- CONNECT TO HIVEMQ
-========================================================
-
- HiveMQ Cloud WebSocket:
-
- WSS
- Port 8884
-
-========================================================
-*/
-
-const client = mqtt.connect(
-    "wss://" +
-    HOST +
-    ":" +
-    PORT +
-    "/mqtt",
-    {
-        username: USER,
-
-        password: PASS,
-
-        clientId: CLIENT_ID,
-
-        clean: true,
-
-        connectTimeout: 10000,
-
-        reconnectPeriod: 3000,
-
-        keepalive: 30
-    }
-);
-
-
-/*
-========================================================
- MQTT CONNECTED
-========================================================
-*/
-
-client.on(
-    "connect",
-    () =>
-    {
-        console.log(
-            "MQTT connected"
-        );
-
-
-        $("connection")
-            .classList
-            .add("ok");
-
-
-        $("connectionText")
-            .textContent =
-            "Connected";
-
-
-        client.subscribe(
-            STATE,
-            {
-                qos: 0
-            },
-            error =>
-            {
-                if (error)
-                {
-                    console.error(
-                        "Subscribe error:",
-                        error
-                    );
-
-                    toast(
-                        "State subscribe failed"
-                    );
-                }
-                else
-                {
-                    console.log(
-                        "Subscribed:",
-                        STATE
-                    );
-                }
-            }
-        );
-    }
-);
-
-
-/*
-========================================================
- MQTT RECONNECT
-========================================================
-*/
-
-client.on(
-    "reconnect",
-    () =>
-    {
-        console.log(
-            "MQTT reconnecting..."
-        );
-
-
-        $("connection")
-            .classList
-            .remove("ok");
-
-
-        $("connectionText")
-            .textContent =
-            "Reconnecting…";
-    }
-);
-
-
-/*
-========================================================
- MQTT CLOSE
-========================================================
-*/
-
-client.on(
-    "close",
-    () =>
-    {
-        $("connection")
-            .classList
-            .remove("ok");
-
-
-        $("connectionText")
-            .textContent =
-            "Disconnected";
-    }
-);
-
-
-/*
-========================================================
- MQTT ERROR
-========================================================
-*/
-
-client.on(
-    "error",
-    error =>
-    {
-        console.error(
-            "MQTT ERROR:",
-            error
-        );
-    }
-);
-
-
-/*
-========================================================
- MQTT MESSAGE
-========================================================
-*/
-
-client.on(
-    "message",
-    (topic, message) =>
-    {
-        console.log(
-            "MQTT MESSAGE:",
-            topic,
-            message.toString()
-        );
-
-
-        if (topic === STATE)
-        {
-            updateState(
-                message
-                    .toString()
-                    .trim()
-            );
-        }
-    }
-);
-
-
-/*
-========================================================
- UPDATE FAN STATE
-========================================================
-*/
-
-function updateState(value)
-{
-    if (!value)
-    {
-        return;
-    }
-
-
-    const state =
-        value.toUpperCase();
-
-
-    $("state")
-        .textContent =
-        state;
-
-
-    $("last")
-        .textContent =
-        "Live";
-
-
-    /*
-    -----------------------------------------------
-    Remove previous speed highlight
-    -----------------------------------------------
-    */
-
-    document
-        .querySelectorAll(".speed")
-        .forEach(
-            button =>
-            {
-                button
-                    .classList
-                    .remove("active");
-            }
-        );
-
-
-    /*
-    -----------------------------------------------
-    OFF
-    -----------------------------------------------
-    */
-
-    if (state === "OFF")
-    {
-        $("fan")
-            .classList
-            .remove("running");
-
-
-        $("speedText")
-            .textContent =
-            "Fan is off";
-
-
-        return;
-    }
-
-
-    /*
-    -----------------------------------------------
-    ON
-    -----------------------------------------------
-    */
-
-    $("fan")
-        .classList
-        .add("running");
-
-
-    if (state === "ON")
-    {
-        $("speedText")
-            .textContent =
-            "Powered on";
-
-        return;
-    }
-
-
-    /*
-    -----------------------------------------------
-    FULL
-    -----------------------------------------------
-    */
-
-    if (state === "FULL")
-    {
-        $("speedText")
-            .textContent =
-            "Full power";
-
-        return;
-    }
-
-
-    /*
-    -----------------------------------------------
-    SPEED
-    -----------------------------------------------
-    */
-
-    const match =
-        state.match(
-            /SPEED\s*(\d+)/
-        );
-
-
-    if (match)
-    {
-        const speed =
-            match[1];
-
-
-        const button =
-            document.querySelector(
-                `.speed[data-speed="${speed}"]`
-            );
-
-
-        if (button)
-        {
-            button
-                .classList
-                .add("active");
-        }
-
-
-        $("speedText")
-            .textContent =
-            "Speed " + speed;
-
-
-        return;
-    }
-
-
-    /*
-    -----------------------------------------------
-    OTHER STATE
-    -----------------------------------------------
-    */
-
-    $("speedText")
-        .textContent =
-        "Running";
-}
-
-
-/*
-========================================================
- TOAST
-========================================================
-*/
-
-let toastTimer = null;
-
-
-function toast(message)
-{
-    $("toast")
-        .textContent =
-        message;
-
-
-    $("toast")
-        .classList
-        .add("show");
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            () =>
-            {
-                $("toast")
-                    .classList
-                    .remove("show");
-            },
-            1200
-        );
-}
-
-
-/*
-========================================================
- SEND COMMAND
-========================================================
-*/
+// =========================================================
+// SEND COMMAND
+// =========================================================
 
 function sendCommand(command)
 {
-    console.log(
-        "Sending:",
-        command
-    );
 
+  fetch(
+    '/command?cmd=' +
+    encodeURIComponent(command)
+  )
 
-    /*
-    -----------------------------------------------
-    Check MQTT
-    -----------------------------------------------
-    */
-
-    if (!client.connected)
+  .then(
+    function(response)
     {
-        toast(
-            "Not connected to MQTT"
-        );
-
-        return;
+      return response.text();
     }
+  )
 
+  .then(
+    function(state)
+    {
+      document.getElementById(
+        'state'
+      ).innerText = state;
+    }
+  )
 
-    /*
-    -----------------------------------------------
-    Publish
-    -----------------------------------------------
-    */
+  .catch(
+    function(error)
+    {
+      console.log(
+        'Command error:',
+        error
+      );
+    }
+  );
 
-    client.publish(
-        CMD,
-        command,
-        {
-            qos: 0,
-            retain: false
-        },
-        error =>
-        {
-            if (error)
-            {
-                console.error(
-                    "Publish error:",
-                    error
-                );
-
-                toast(
-                    "Send failed"
-                );
-
-                return;
-            }
-
-
-            console.log(
-                "Sent:",
-                command
-            );
-
-
-            toast(
-                "Sent: " + command
-            );
-        }
-    );
 }
 
 
-/*
-========================================================
- SERVICE WORKER
-========================================================
-*/
+// =========================================================
+// UPDATE STATE
+// =========================================================
 
-if (
-    "serviceWorker" in navigator
-)
+function updateState()
 {
-    navigator.serviceWorker
-        .register("sw.js")
-        .catch(
-            error =>
-            {
-                console.log(
-                    "Service worker:",
-                    error
-                );
-            }
-        );
+
+  fetch('/state')
+
+  .then(
+    function(response)
+    {
+      return response.text();
+    }
+  )
+
+  .then(
+    function(state)
+    {
+
+      document.getElementById(
+        'state'
+      ).innerText = state;
+
+    }
+  )
+
+  .catch(
+    function(error)
+    {
+      console.log(
+        'State error:',
+        error
+      );
+    }
+  );
+
 }
+
+
+// =========================================================
+// UPDATE STATE EVERY SECOND
+// =========================================================
+
+setInterval(
+  updateState,
+  1000
+);
+
+
+// =========================================================
+// INITIAL STATE
+// =========================================================
+
+updateState();
+
 
 </script>
 
-</main>
 
 </body>
 
